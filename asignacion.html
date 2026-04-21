@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Asignaciones - RutaGT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <h1>RutaGT</h1>
+  <p>Sistema de Gestión de Rutas y Asignaciones</p>
+  <a href="index.html" class="back-button">Regresar al Inicio</a>
+</header>
+
+<div class="container">
+  <div class="form-layout">
+    <img src="https://via.placeholder.com/200x300/005eff/ffffff?text=Logistica" alt="Logística de Transporte" class="side-image left">
+    
+    <div class="form-content">
+      <section class="form-section">
+        <h2>Crear Asignación</h2>
+        <form id="crear-form">
+          <label for="operador">ID Operador:</label>
+          <input id="operador" placeholder="ID Operador" required>
+          
+          <label for="vehiculo">ID Vehículo:</label>
+          <input id="vehiculo" placeholder="ID Vehículo" required>
+          
+          <label for="ruta">ID Ruta:</label>
+          <input id="ruta" placeholder="ID Ruta" required>
+          
+          <label for="inicio">Fecha Inicio:</label>
+          <input id="inicio" type="date" required>
+          
+          <label for="fin">Fecha Fin:</label>
+          <input id="fin" type="date" required>
+          
+          <button type="submit">Asignar</button>
+        </form>
+      </section>
+
+      <section class="form-section">
+        <h2>Finalizar Asignación</h2>
+        <form id="finalizar-form">
+          <label for="id_asignacion">ID Asignación:</label>
+          <input id="id_asignacion" placeholder="ID Asignación" required>
+          
+          <button type="submit">Finalizar</button>
+        </form>
+      </section>
+
+      <p id="msg"></p>
+    </div>
+    
+    <img src="https://via.placeholder.com/200x300/28a745/ffffff?text=Transporte" alt="Transporte y Rutas" class="side-image right">
+  </div>
+  
+  <div class="chatbot-button" onclick="alert('Chatbot próximamente')">
+    <img src="https://via.placeholder.com/50x50/333333/ffffff?text=Chat" alt="Chatbot">
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+document.getElementById("crear-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  crearAsignacion();
+});
+
+document.getElementById("finalizar-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  finalizarAsignacion();
+});
+
+function crearAsignacion() {
+  fetch("http://localhost:5000/asignar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({
+      id_operador: document.getElementById("operador").value,
+      id_vehiculo: document.getElementById("vehiculo").value,
+      id_ruta: document.getElementById("ruta").value,
+      fecha_inicio: document.getElementById("inicio").value,
+      fecha_fin: document.getElementById("fin").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("msg").innerText = JSON.stringify(data);
+  });
+}
+
+function finalizarAsignacion() {
+  fetch("http://localhost:5000/asignacion/finalizar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({
+      id_asignacion: document.getElementById("id_asignacion").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("msg").innerText = JSON.stringify(data);
+  });
+}
+</script>
+
+</body>
+</html>
